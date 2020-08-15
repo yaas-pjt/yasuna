@@ -5,15 +5,16 @@ import java.util.Date;
 public class Task {
 
 	private int seq;
-	private int userSeq;
+	private int uid;
 	private int taskId;
-	private int parentTaskId;
+	private int parentId;
 	private String title;
-	private int status;
 	private String memo;
+	private int status;
+	private int category;
 	private Date startDate;
 	private Date endDate;
-	private Date deadlineDate;
+	private Date deadline;
 	private Date prcDate;
 
 	public Task() {
@@ -28,12 +29,12 @@ public class Task {
 		this.seq = seq;
 	}
 
-	public int getUserSeq() {
-		return userSeq;
+	public int getUid() {
+		return uid;
 	}
 
-	public void setUserSeq(int userSeq) {
-		this.userSeq = userSeq;
+	public void setUd(int uid) {
+		this.uid = uid;
 	}
 
 	public int getTaskId() {
@@ -44,12 +45,12 @@ public class Task {
 		this.taskId = taskId;
 	}
 
-	public int getParentTaskId() {
-		return parentTaskId;
+	public int getParentId() {
+		return parentId;
 	}
 
-	public void setParentTaskId(int parentTaskId) {
-		this.parentTaskId = parentTaskId;
+	public void setParentId(int parentId) {
+		this.parentId = parentId;
 	}
 
 	public String getTitle() {
@@ -60,6 +61,14 @@ public class Task {
 		this.title = title;
 	}
 
+	public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
 	public int getStatus() {
 		return status;
 	}
@@ -68,12 +77,12 @@ public class Task {
 		this.status = status;
 	}
 
-	public String getMemo() {
-		return memo;
+	public int getCategory() {
+		return category;
 	}
 
-	public void setMemo(String memo) {
-		this.memo = memo;
+	public void setCategory(int category) {
+		this.category = category;
 	}
 
 	public Date getStartDate() {
@@ -92,12 +101,12 @@ public class Task {
 		this.endDate = endDate;
 	}
 
-	public Date getDeadlineDate() {
-		return deadlineDate;
+	public Date getDeadline() {
+		return deadline;
 	}
 
-	public void setDeadlineDate(Date deadlineDate) {
-		this.deadlineDate = deadlineDate;
+	public void setDeadline(Date deadline) {
+		this.deadline = deadline;
 	}
 
 	public Date getPrcDate() {
@@ -107,6 +116,4 @@ public class Task {
 	public void setPrcDate(Date prcDate) {
 		this.prcDate = prcDate;
 	}
-
-
 }

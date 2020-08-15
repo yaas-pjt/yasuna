@@ -14,11 +14,12 @@ import com.vaadin.flow.server.PWA;
 import com.yaas.yasuna.auth.AccessControlLogic;
 import com.yaas.yasuna.auth.impl.AccessControlLogicImpl;
 
-@PWA(name = "My Application", shortName = "My Application")
+@PWA(name = "yasuna", shortName = "yasuna",
+			iconPath = "icons/yasuna03.png", 	description = "うざいタスクを楽しく管理", backgroundColor = "#ff8c00")
 @Route("login")
 @PageTitle("Login")
 @CssImport("./styles/shared-styles.css")
-public class LoginPage extends VerticalLayout implements TemplateView{
+public class LoginPage extends VerticalLayout{
 
 	private AccessControlLogic accessControl;
 
@@ -26,7 +27,6 @@ public class LoginPage extends VerticalLayout implements TemplateView{
 		buildUI();
 	}
 
-	@Override
 	public void buildUI() {
 		setSizeFull();
 		setClassName("login-screen");
@@ -43,11 +43,10 @@ public class LoginPage extends VerticalLayout implements TemplateView{
 		centeringLayout.setAlignItems(Alignment.CENTER);
 		centeringLayout.add(loginForm);
 
-		// iヘッダーにでかでかと出てるアレ
+		// ヘッダーにでかでかと出てるアレ
 		Component loginInformation = buildLoginInformation();
 		add(loginInformation);
 		add(centeringLayout);
-
 	}
 
 	private Component buildLoginInformation() {
@@ -68,7 +67,7 @@ public class LoginPage extends VerticalLayout implements TemplateView{
 		accessControl = new AccessControlLogicImpl();
 
 		if (accessControl.signIn(event.getUsername(), event.getPassword())) {
-			getUI().get().navigate("");
+			getUI().get().navigate("mytask");
 			} else {
 				event.getSource().setError(true);
 				}
