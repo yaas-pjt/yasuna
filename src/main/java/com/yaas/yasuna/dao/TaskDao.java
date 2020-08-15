@@ -20,6 +20,6 @@ public class TaskDao extends AbsDao<Task> {
 		return (List<Task>) getByConditions(task, taskMap.getMap(), connection, GET_BY_SEQ, paramList);
 	}
 
-	private static final String GET_BY_SEQ = "SELECT * FROM TASK WHERE USER_SEQ = ?";
+	private static final String GET_BY_SEQ = "SELECT * FROM T_TASK WHERE T_UID = ?";
 
 }

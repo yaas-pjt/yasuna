@@ -1,0 +1,8 @@
+	.sideMenu {
+		background-color: white;
+		z-index: 1000;
+		position: absolute;
+		transition: 0.2s;
+		left: -1000px;
+		box-shadow: 2px 1px 5px 0px grey;
+	}

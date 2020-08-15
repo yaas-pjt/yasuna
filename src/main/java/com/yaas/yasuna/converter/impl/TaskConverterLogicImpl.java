@@ -11,15 +11,15 @@ public class TaskConverterLogicImpl implements ConverterLogic<Task, TaskForm> {
 		TaskForm taskForm = new TaskForm();
 
 		taskForm.setSeq(task.getSeq());
-		taskForm.setUserSeq(task.getUserSeq());
+		taskForm.setUid(task.getUid());
 		taskForm.setTaskId(task.getTaskId());
-		taskForm.setParentTaskId(task.getParentTaskId());
+		taskForm.setParentId(task.getParentId());
 		taskForm.setTitle(task.getTitle());
 		taskForm.setStatus(task.getStatus());
 		taskForm.setMemo(task.getMemo());
 		taskForm.setStartDate(task.getStartDate());
 		taskForm.setEndDate(task.getEndDate());
-		taskForm.setDeadlineDate(task.getDeadlineDate());
+		taskForm.setDeadline(task.getDeadline());
 		taskForm.setPrcDate(task.getPrcDate());
 
 		return taskForm;

@@ -1,8 +1,10 @@
 package com.yaas.yasuna.auth.impl;
 
+import com.vaadin.flow.server.VaadinService;
 import com.yaas.yasuna.auth.AccessControlLogic;
+import com.yaas.yasuna.consts.SessionAttributeConsts;
 import com.yaas.yasuna.encoder.PasswordEncoder;
-import com.yaas.yasuna.entity.User;
+import com.yaas.yasuna.form.UserForm;
 import com.yaas.yasuna.service.UserService;
 
 public class AccessControlLogicImpl implements AccessControlLogic {
@@ -14,15 +16,17 @@ public class AccessControlLogicImpl implements AccessControlLogic {
 			return false;
 		}
 
-		User user = userService().getById(username);
+		UserForm loginUser = userService().getById(username);
 
-		if(user == null) {
+		if(loginUser == null) {
 			return false;
 		}
 
-		if(!user.getPassword().equals(passwordEncoder().encodePassword(password))) {
+		if(!loginUser.getPassword().equals(passwordEncoder().encodePassword(password))) {
 			return false;
 		}
+
+		VaadinService.getCurrentRequest().getWrappedSession().setAttribute(SessionAttributeConsts.SESSION_ATTRIBUTE_USER, loginUser);
 
 		return true;
 	}
