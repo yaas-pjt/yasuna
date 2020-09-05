@@ -71,6 +71,22 @@ public abstract class AbsDao<C> {
 
 	}
 
+	protected C getBySeq(C c, Map<String, String> cp, Connection connection, String sql, long seq) {
+
+		prepare(cp, c.getClass());
+
+		try {
+			ResultSetHandler helper = new BeanHandler(c.getClass(), row);
+			C entity  = (C) queryRunner.query(connection,sql,helper,seq);
+
+			return entity;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new NullPointerException();
+		}
+
+	}
 
 
 	protected List<C> getByConditions(C c, Map<String, String> cp, Connection connection, String sql, List<Object>args){
@@ -91,26 +107,10 @@ public abstract class AbsDao<C> {
 
 
 
-	protected int add(C c,Connection connection, String sql, List<Object> args) {
+	protected int add(Connection connection, String sql, List<Object> args) {
 
 		int row = 0;
-
-
-		 try {
-			row = queryRunner.update(connection, sql, args.toArray());
-			return row;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new IllegalStateException();
-		}
-	}
-
-
-
-	protected int update(Connection connection, String sql, List<Object> args) {
-
-		int row = 0;
-
+		queryRunner = new QueryRunner();
 
 		 try {
 			row = queryRunner.update(connection, sql, args.toArray());
@@ -129,10 +129,10 @@ public abstract class AbsDao<C> {
 
 
 
-	protected int delete(C c,Connection connection, String sql, List<Object> args) {
+	protected int update(Connection connection, String sql, List<Object> args) {
 
 		int row = 0;
-
+		queryRunner = new QueryRunner();
 
 		 try {
 			row = queryRunner.update(connection, sql, args.toArray());
@@ -140,6 +140,34 @@ public abstract class AbsDao<C> {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new IllegalStateException();
+		}finally {
+			try {
+				DbUtils.commitAndClose(connection);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+
+	protected int delete(Connection connection, String sql, List<Object> args) {
+
+		int row = 0;
+
+		queryRunner = new QueryRunner();
+		 try {
+			row = queryRunner.update(connection, sql, args.toArray());
+			return row;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new IllegalStateException();
+		}finally {
+			try {
+				DbUtils.commitAndClose(connection);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

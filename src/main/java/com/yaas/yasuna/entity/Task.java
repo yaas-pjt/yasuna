@@ -4,16 +4,15 @@ import java.util.Date;
 
 public class Task {
 
-	private int seq;
-	private int uid;
-	private int taskId;
-	private int parentId;
+	private long seq;
+	private long fkUserSeq;
+	private long parentTaskId;
 	private String title;
 	private String memo;
 	private int status;
 	private int category;
-	private Date startDate;
-	private Date endDate;
+	private Date sDate;
+	private Date eDate;
 	private Date deadline;
 	private Date prcDate;
 
@@ -21,36 +20,28 @@ public class Task {
 		super();
 	}
 
-	public int getSeq() {
+	public long getSeq() {
 		return seq;
 	}
 
-	public void setSeq(int seq) {
+	public void setSeq(long seq) {
 		this.seq = seq;
 	}
 
-	public int getUid() {
-		return uid;
+	public long getFkUserSeq() {
+		return fkUserSeq;
 	}
 
-	public void setUd(int uid) {
-		this.uid = uid;
+	public void setFkUserSeq(long fkUserSeq) {
+		this.fkUserSeq = fkUserSeq;
 	}
 
-	public int getTaskId() {
-		return taskId;
+	public long getParentTaskId() {
+		return parentTaskId;
 	}
 
-	public void setTaskId(int taskId) {
-		this.taskId = taskId;
-	}
-
-	public int getParentId() {
-		return parentId;
-	}
-
-	public void setParentId(int parentId) {
-		this.parentId = parentId;
+	public void setParentTaskId(long parentTaskId) {
+		this.parentTaskId = parentTaskId;
 	}
 
 	public String getTitle() {
@@ -85,20 +76,20 @@ public class Task {
 		this.category = category;
 	}
 
-	public Date getStartDate() {
-		return startDate;
+	public Date getsDate() {
+		return sDate;
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
+	public void setsDate(Date sDate) {
+		this.sDate = sDate;
 	}
 
-	public Date getEndDate() {
-		return endDate;
+	public Date geteDate() {
+		return eDate;
 	}
 
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	public void seteDate(Date eDate) {
+		this.eDate = eDate;
 	}
 
 	public Date getDeadline() {
@@ -116,4 +107,5 @@ public class Task {
 	public void setPrcDate(Date prcDate) {
 		this.prcDate = prcDate;
 	}
+
 }
