@@ -6,16 +6,16 @@ import com.google.common.collect.Maps;
 
 public class UserMap extends AbsObjectMap {
 
-	private static final String KEY_SEQ = "u_seq";
-	private static final String KEY_U_ID = "u_id";
-	private static final String KEY_DISPLAY_NAME = "u_display_name";
-	private static final String KEY_PASSWORD = "u_password";
-	private static final String KEY_STATUS = "u_status";
-	private static final String KEY_ROLE_ID = "u_role_id";
-	private static final String KEY_PRC_DATE = "u_prc_date";
+	private static final String KEY_SEQ = "seq";
+	private static final String KEY_U_ID = "user_id";
+	private static final String KEY_DISPLAY_NAME = "display_name";
+	private static final String KEY_PASSWORD = "password";
+	private static final String KEY_STATUS = "status";
+	private static final String KEY_ROLE_ID = "role_id";
+	private static final String KEY_PRC_DATE = "prc_date";
 
 	private static final String VALUE_SEQ = "seq";
-	private static final String VALUE_U_ID = "uid";
+	private static final String VALUE_U_ID = "userId";
 	private static final String VALUE_DISPLAY_NAME = "displayName";
 	private static final String VALUE_PASSWORD = "password";
 	private static final String VALUE_STATUS = "status";

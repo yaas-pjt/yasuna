@@ -15,5 +15,5 @@ public class UserDao extends AbsDao<User> {
 		return getById(user, userMap.getMap(), connection, GET_BY_ID, userId);
 	}
 
-	private static final String GET_BY_ID = "SELECT * FROM U_USER WHERE U_ID = ?";
+	private static final String GET_BY_ID = "SELECT * FROM U_USER WHERE USER_ID = ?";
 }

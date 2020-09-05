@@ -4,32 +4,32 @@ import java.util.Date;
 
 public class User {
 
-	private int seq;
-	private String uid;
+	private long seq;
+	private String userId;
 	private String displayName;
 	private String password;
-	private String roleId;
 	private int status;
+	private long roleId;
 	private Date prcDate;
 
 	public User() {
 		super();
 	}
 
-	public int getSeq() {
+	public long getSeq() {
 		return seq;
 	}
 
-	public void setSeq(int seq) {
+	public void setSeq(long seq) {
 		this.seq = seq;
 	}
 
-	public String getUid() {
-		return uid;
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setUid(String uid) {
-		this.uid = uid;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getDisplayName() {
@@ -48,20 +48,20 @@ public class User {
 		this.password = password;
 	}
 
-	public String getRoleId() {
-		return roleId;
-	}
-
-	public void setRoleId(String roleId) {
-		this.roleId = roleId;
-	}
-
 	public int getStatus() {
 		return status;
 	}
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public long getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(long roleId) {
+		this.roleId = roleId;
 	}
 
 	public Date getPrcDate() {
@@ -71,6 +71,4 @@ public class User {
 	public void setPrcDate(Date prcDate) {
 		this.prcDate = prcDate;
 	}
-
-
 }

@@ -8,27 +8,27 @@ public class TaskMap extends AbsObjectMap {
 
 	private Map<String, String> map;
 
-	private static final String KEY_SEQ = "t_seq";
-	private static final String KEY_UID = "t_uid";
-	private static final String KEY_PARENT_ID = "t_parent_id";
-	private static final String KEY_TITLE = "t_title";
-	private static final String KEY_MEMO = "t_memo";
-	private static final String KEY_STATUS = "t_status";
-	private static final String KEY_CATEGORY = "t_category";
-	private static final String KEY_START_DATE = "t_start_date";
-	private static final String KEY_END_DATE = "t_end_date";
-	private static final String KEY_DEADLINE_DATE = "t_deadline";
+	private static final String KEY_SEQ = "seq";
+	private static final String KEY_UID = "fk_user_seq";
+	private static final String KEY_PARENT_ID = "parent_task_id";
+	private static final String KEY_TITLE = "title";
+	private static final String KEY_MEMO = "memo";
+	private static final String KEY_STATUS = "status";
+	private static final String KEY_CATEGORY = "category";
+	private static final String KEY_START_DATE = "sdate";
+	private static final String KEY_END_DATE = "edate";
+	private static final String KEY_DEADLINE_DATE = "deadline";
 	private static final String KEY_PRC_DATE = "prc_date";
 
 	private static final String VALUE_SEQ = "seq";
-	private static final String VALUE_UID = "uid";
-	private static final String VALUE_PARENT_ID = "parentId";
+	private static final String VALUE_UID = "fkUserSeq";
+	private static final String VALUE_PARENT_ID = "parentTaskId";
 	private static final String VALUE_TITLE = "title";
 	private static final String VALUE_MEMO = "memo";
 	private static final String VALUE_STATUS = "status";
 	private static final String VALUE_CATEGORY = "category";
-	private static final String VALUE_START_DATE = "startDate";
-	private static final String VALUE_END_DATE = "endDate";
+	private static final String VALUE_START_DATE = "sDate";
+	private static final String VALUE_END_DATE = "eDate";
 	private static final String VALUE_DEADLINE_DATE = "deadline";
 	private static final String VALUE_PRC_DATE = "prcDate";
 

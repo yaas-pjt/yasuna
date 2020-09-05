@@ -12,8 +12,8 @@ public class UserConverterLogicImpl implements ConverterLogic<User, UserForm> {
 		UserForm userForm = new UserForm();
 
 		userForm.setSeq(user.getSeq());
-		userForm.setUserId(user.getUid());
-		userForm.setUserName(user.getDisplayName());
+		userForm.setUserId(user.getUserId());
+		userForm.setDisplayName(user.getDisplayName());
 		userForm.setStatus(user.getStatus());
 		userForm.setPassword(user.getPassword());
 

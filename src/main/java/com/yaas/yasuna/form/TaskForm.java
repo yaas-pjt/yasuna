@@ -1,56 +1,48 @@
 package com.yaas.yasuna.form;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class TaskForm {
 
-	private int seq;
-	private int uid;
-	private int taskId;
-	private int parentId;
+	private long seq;
+	private long fkUserSeq;
+	private long parentTaskId;
 	private String title;
 	private String memo;
-	private int status;
-	private int category;
-	private Date startDate;
-	private Date endDate;
-	private Date deadline;
+	private String status;
+	private String category;
+	private LocalDate sDate;
+	private LocalDate eDate;
+	private LocalDate deadline;
 	private Date prcDate;
 
 	public TaskForm() {
 		super();
 	}
 
-	public int getSeq() {
+	public long getSeq() {
 		return seq;
 	}
 
-	public void setSeq(int seq) {
+	public void setSeq(long seq) {
 		this.seq = seq;
 	}
 
-	public int getUid() {
-		return uid;
+	public long getFkUserSeq() {
+		return fkUserSeq;
 	}
 
-	public void setUid(int uid) {
-		this.uid = uid;
+	public void setFkUserSeq(long fkUserSeq) {
+		this.fkUserSeq = fkUserSeq;
 	}
 
-	public int getTaskId() {
-		return taskId;
+	public long getParentTaskId() {
+		return parentTaskId;
 	}
 
-	public void setTaskId(int taskId) {
-		this.taskId = taskId;
-	}
-
-	public int getParentId() {
-		return parentId;
-	}
-
-	public void setParentId(int parentId) {
-		this.parentId = parentId;
+	public void setParentTaskId(long parentTaskId) {
+		this.parentTaskId = parentTaskId;
 	}
 
 	public String getTitle() {
@@ -69,43 +61,43 @@ public class TaskForm {
 		this.memo = memo;
 	}
 
-	public int getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(int status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
-	public int getCategory() {
+	public String getCategory() {
 		return category;
 	}
 
-	public void setCategory(int category) {
+	public void setCategory(String category) {
 		this.category = category;
 	}
 
-	public Date getStartDate() {
-		return startDate;
+	public LocalDate getsDate() {
+		return sDate;
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
+	public void setsDate(LocalDate sDate) {
+		this.sDate = sDate;
 	}
 
-	public Date getEndDate() {
-		return endDate;
+	public LocalDate geteDate() {
+		return eDate;
 	}
 
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	public void seteDate(LocalDate eDate) {
+		this.eDate = eDate;
 	}
 
-	public Date getDeadline() {
+	public LocalDate getDeadline() {
 		return deadline;
 	}
 
-	public void setDeadline(Date deadline) {
+	public void setDeadline(LocalDate deadline) {
 		this.deadline = deadline;
 	}
 
@@ -116,7 +108,5 @@ public class TaskForm {
 	public void setPrcDate(Date prcDate) {
 		this.prcDate = prcDate;
 	}
-
-
 
 }

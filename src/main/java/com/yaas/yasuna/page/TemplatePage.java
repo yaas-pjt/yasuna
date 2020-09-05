@@ -13,49 +13,74 @@ import com.vaadin.flow.component.tabs.Tabs;
 
 public abstract class TemplatePage extends VerticalLayout{
 
-	abstract void buildUI();
+	abstract void buildMainUI();
 
-	abstract void construct(Component... UIParts);
+	public void construct(Component[] headerParts, Component[] mainParts, Component[] footerParts) {
+		setDefaultSetting();
+		buildHeader(headerParts);
+		buildMainContents(mainParts);
+		buildFooter(footerParts);
+	}
+
+	private void setDefaultSetting() {
+		setSizeFull();
+		setMargin(false);
+		setSpacing(false);
+		setPadding(false);
+	}
 
 	// ヘッダー
-	public void buildHeader() {
+	private void buildHeader(Component... components) {
 
 		Icon drawer = VaadinIcon.MENU.create();
 		Span title = new Span("やすな（テスト中）");
-		Icon help = VaadinIcon.QUESTION_CIRCLE.create();
-		HorizontalLayout header = new HorizontalLayout(drawer, title, help);
+		HorizontalLayout header = new HorizontalLayout();
+		header.add(drawer);
+		header.add(title);
+
+		if(components != null) {
+			header.add(components);
+		}
+
 		header.expand(title);
 		header.setPadding(true);
 		header.setWidth("100%");
 
 		add(header);
-
 		buildSideMenu(drawer);
 	}
 
+	protected void buildMainContents(Component... components) {
+
+			VerticalLayout mainContents = new VerticalLayout();
+			mainContents.setClassName("maincontents");
+			mainContents.add(components);
+			add(mainContents);
+	}
+
 	//フッター
-	public void buildFooter() {
+	private void buildFooter(Component... components) {
 
 		Tab actionButton1 = new Tab(VaadinIcon.USER.create(), new Span("個人タスク"));
 		Tab actionButton2 = new Tab(VaadinIcon.USERS.create(), new Span("チームタスク"));
 		Tab actionButton3 = new Tab(VaadinIcon.CALENDAR.create(), new Span("スケジュール"));
 		Tabs buttonBar = new Tabs(actionButton1, actionButton2, actionButton3);
-		HorizontalLayout footer = new HorizontalLayout(buttonBar);
+		HorizontalLayout footer = new HorizontalLayout(components);
 		footer.setJustifyContentMode(JustifyContentMode.CENTER);
 		footer.setWidth("100%");
 
 		add(footer);
 	}
 
-	public void buildSideMenu(Icon drawer) {
+	private void buildSideMenu(Icon drawer) {
 		VerticalLayout sideMenu = new VerticalLayout();
 		sideMenu.addClassName("sideMenu");
 		sideMenu.setHeight("100%");
 		sideMenu.setWidth("auto");
 		sideMenu.setSpacing(false);
-		drawer.getElement().addEventListener("click", ev->sideMenu.getStyle().set("left", "0px"));
+		drawer.getElement().addEventListener("click", event -> sideMenu.getStyle().set("left", "0px"));
 		Icon avatar = VaadinIcon.USER.create();
-		avatar.setSize("4em");
+		avatar.setSize("8em");
 		sideMenu.add(createMenuOption("閉じる"), avatar, new Span("John Doe"),createMenuOption("個人設定"), createMenuOption("チーム"), createMenuOption("ログアウト"));
 		sideMenu.setAlignItems(Alignment.CENTER);
 

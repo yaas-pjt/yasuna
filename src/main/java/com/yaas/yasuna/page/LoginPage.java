@@ -15,7 +15,7 @@ import com.yaas.yasuna.auth.AccessControlLogic;
 import com.yaas.yasuna.auth.impl.AccessControlLogicImpl;
 
 @PWA(name = "yasuna", shortName = "yasuna",
-			iconPath = "icons/yasuna03.png", 	description = "うざいタスクを楽しく管理", backgroundColor = "#ff8c00")
+iconPath = "icons/yasuna03.png", 	description = "うざいタスクを楽しく管理", backgroundColor = "#ff8c00")
 @Route("login")
 @PageTitle("Login")
 @CssImport("./styles/shared-styles.css")
