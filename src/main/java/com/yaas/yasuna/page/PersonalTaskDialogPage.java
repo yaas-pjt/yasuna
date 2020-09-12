@@ -35,6 +35,8 @@ public class PersonalTaskDialogPage extends DialogTemplatePage{
 	private int selectedCategory;
 	private int selectedStatus;
 
+	private boolean result = false;
+
 
 	public void openAddTaskFormat(long uid, List<TaskForm> taskList) {
 
@@ -151,7 +153,7 @@ public class PersonalTaskDialogPage extends DialogTemplatePage{
 		deadlineField.setValue(now.plusDays(1));
 		deadlineField.setLabel("対応期限");
 
-		Button changeButton = new Button("更新",  event -> changeCategory(newCategory, deadlineField.getValue(), targetTaskList));
+		Button changeButton = new Button("更新",  event -> changeCategory(dialog, newCategory, deadlineField.getValue(), targetTaskList));
 
 		format.add(deadlineField, changeButton);
 		dialog.add(format);
@@ -159,7 +161,7 @@ public class PersonalTaskDialogPage extends DialogTemplatePage{
 
 	}
 
-	private void changeCategory(String newCategory, LocalDate deadline, List<TaskForm> targetTaskList) {
+	private void changeCategory(Dialog dialog, String newCategory, LocalDate deadline, List<TaskForm> targetTaskList) {
 
 		int category = convertCategory(newCategory);
 		Date deadlineDate = Date.from(deadline.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -169,7 +171,7 @@ public class PersonalTaskDialogPage extends DialogTemplatePage{
 			seqList.add(taskForm.getSeq());
 		}
 
-		taskService().updateCategory(category, deadlineDate, seqList);
+		dialog.close();
 	}
 
 	private int convertCategory(String category) {
@@ -224,7 +226,7 @@ public class PersonalTaskDialogPage extends DialogTemplatePage{
 		dialog.open();
 	}
 
-	public void openUpdateDeadlineDialog(List<TaskForm> targetTaskList) {
+	public boolean openUpdateDeadlineDialog(List<TaskForm> targetTaskList) {
 		Dialog dialog = new Dialog();
 		dialog.setWidth("400px");
 		dialog.setHeight("650px");
@@ -248,6 +250,7 @@ public class PersonalTaskDialogPage extends DialogTemplatePage{
 		dialog.add(updateButton);
 		dialog.open();
 
+		return result;
 	}
 
 
@@ -379,51 +382,11 @@ public class PersonalTaskDialogPage extends DialogTemplatePage{
 		taskService().add(paramList);
 	}
 
-	private void updateStatus(Dialog dialog, int status, List<TaskForm> targetTaskList) {
+	private void updateStatus(Dialog dialog, int status, List<TaskForm> targetTaskList) {}
 
-		List<Long> seqList = Lists.newArrayList();
+	private void updateDeadline(Dialog dialog, LocalDate deadline, List<TaskForm> targetTaskList) {}
 
-		for(TaskForm taskForm : targetTaskList) {
-			seqList.add(taskForm.getSeq());
-		}
-
-		if(taskService().updateStatus(status, seqList)) {
-			dialog.close();
-			PersonalTaskPage page = new PersonalTaskPage();
-			page.notifyResult();
-		}
-
-	}
-
-	private void updateDeadline(Dialog dialog, LocalDate deadline, List<TaskForm> targetTaskList) {
-		List<Long> seqList = Lists.newArrayList();
-		Date deadlineDate = Date.from(deadline.atStartOfDay(ZoneId.systemDefault()).toInstant());
-		for(TaskForm taskForm : targetTaskList) {
-			seqList.add(taskForm.getSeq());
-		}
-
-		if(taskService().updateDeadline(deadlineDate, seqList)) {
-			dialog.close();
-			PersonalTaskPage page = new PersonalTaskPage();
-			page.notifyResult();
-		}
-
-	}
-
-	private void deleteTasks(Dialog dialog, List<TaskForm> targetTaskList) {
-
-		List<Long> seqList = Lists.newArrayList();
-
-		for(TaskForm taskForm : targetTaskList) {
-			seqList.add(taskForm.getSeq());
-		}
-
-		if(taskService().deleteBySeq(seqList)) {
-			dialog.close();
-			PersonalTaskPage page = new PersonalTaskPage();
-			page.notifyResult();
-		}
-	}
+	private void deleteTasks(Dialog dialog, List<TaskForm> targetTaskList) {}
 
 
 	@Override

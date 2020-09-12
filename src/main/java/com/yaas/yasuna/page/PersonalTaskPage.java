@@ -11,6 +11,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dnd.DropTarget;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.dnd.GridDragEndEvent;
@@ -22,7 +23,6 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -59,7 +59,6 @@ public class PersonalTaskPage extends TemplatePage{
 
 	private ComponentEventListener<GridDragStartEvent<TaskForm>> dragStartListener;
 	private ComponentEventListener<GridDropEvent<TaskForm>> dropListener;
-	private ComponentEventListener<GridDropEvent<Icon>> iconDropListener;
 	private ComponentEventListener<GridDragEndEvent<TaskForm>> dragEndListener;
 
 	private List<TaskForm> draggedTasks;
@@ -137,7 +136,7 @@ public class PersonalTaskPage extends TemplatePage{
 
 
 		setDragStartEvent(inboxGrid, quickGrid, askGrid, nextGrid);
-		setDropEvent(CHANGE_CATEGORY_MODE);
+		setDropEvent();
 		setDragEndEvent(inboxGrid, quickGrid, askGrid, nextGrid);
 		setDragAndDropEvent(inboxGrid, quickGrid, askGrid, nextGrid);
 
@@ -154,16 +153,14 @@ public class PersonalTaskPage extends TemplatePage{
 		quickAddButton.addThemeVariants(ButtonVariant.LUMO_SMALL,
 		        ButtonVariant.LUMO_PRIMARY);
 
+		Button refreshButton = new Button("更新", event ->open()) ;
+		Icon refreshIcon = new Icon(VaadinIcon.REFRESH);
+		refreshButton.setIcon(refreshIcon);
+		refreshButton.addThemeVariants(ButtonVariant.LUMO_SMALL,
+		        ButtonVariant.LUMO_PRIMARY);
 		HorizontalLayout buttonGroup = new HorizontalLayout(addButton, quickAddButton);
 
-		VerticalLayout taskListLayout = new VerticalLayout();
-		VerticalLayout commandLayout = new VerticalLayout();
-
-		//Sticky sticky = new Sticky(commandLayout);
-
-
-
-		Component[] headerContents = new Component[] {addButton, quickAddButton};
+		Component[] headerContents = new Component[] {addButton, quickAddButton, refreshButton};
 		Component[] mainContents = new Component[] {inboxGrid, quickGrid, askGrid, nextGrid};
 		Component[] footerContents = new Component[] {deleteIcon, statusIcon, scheduleIcon};
 
@@ -224,7 +221,7 @@ public class PersonalTaskPage extends TemplatePage{
 		};
 	}
 
-	private void setDropEvent(long mode){
+	private void setDropEvent(){
 		dropListener = event -> {
 
 
@@ -237,23 +234,22 @@ public class PersonalTaskPage extends TemplatePage{
 			    @SuppressWarnings("unchecked")
 		ListDataProvider<TaskForm> sourceDataProvider = (ListDataProvider<TaskForm>) draggedGrid.getDataProvider();
 			    List<TaskForm> sourceItems = new ArrayList<>(sourceDataProvider.getItems());
-			    sourceItems.removeAll(draggedTasks);
-			    draggedGrid.setItems(sourceItems);
+			    //sourceItems.removeAll(draggedTasks);
+			  //  draggedGrid.setItems(sourceItems);
 
 			    Grid<TaskForm> targetGrid = event.getSource();
 			    @SuppressWarnings("unchecked")
-			    ListDataProvider<TaskForm> targetDataProvider = (ListDataProvider<TaskForm>) targetGrid
-			            .getDataProvider();
+			    ListDataProvider<TaskForm> targetDataProvider = (ListDataProvider<TaskForm>) targetGrid.getDataProvider();
 			    List<TaskForm> targetItems = new ArrayList<>(targetDataProvider.getItems());
 			    targetGrid.setItems(targetItems);
 
 			    oldCategory = setCategorybyGrid(draggedGrid);
 			    newCategory = setCategorybyGrid(targetGrid);
-			    if(CHANGE_CATEGORY_MODE == mode) {
 				    changeCategory(oldCategory, newCategory, draggedTasks);
-			    } else if(TRASH_MODE == mode){
-			    	trashTasks(targetItems);
-			    }
+					inboxGrid.getDataProvider().refreshAll();
+					quickGrid.getDataProvider().refreshAll();
+					askGrid.getDataProvider().refreshAll();
+					nextGrid.getDataProvider().refreshAll();
 			};
 
 			ComponentEventListener<GridDragEndEvent<TaskForm>> dragEndListener = event -> {
@@ -264,6 +260,7 @@ public class PersonalTaskPage extends TemplatePage{
 				askGrid.setDropMode(GridDropMode.BETWEEN);
 				nextGrid.setDropMode(GridDropMode.BETWEEN);
 			};
+
 	}
 
 	private void setDragEndEvent(Grid<TaskForm> inboxGrid, Grid<TaskForm> quickGrid, Grid<TaskForm> askGrid, Grid<TaskForm> nextGrid) {
@@ -275,6 +272,16 @@ public class PersonalTaskPage extends TemplatePage{
 			quickGrid.setDropMode(GridDropMode.BETWEEN);
 			askGrid.setDropMode(GridDropMode.BETWEEN);
 			nextGrid.setDropMode(GridDropMode.BETWEEN);
+			generateTaskLists();
+			inboxGrid.setItems(inboxTaskList);
+			quickGrid.setItems(quickTaskList);
+			askGrid.setItems(askTaskList);
+			nextGrid.setItems(nextTaskList);
+			inboxGrid.getDataProvider().refreshAll();
+			quickGrid.getDataProvider().refreshAll();
+			askGrid.getDataProvider().refreshAll();
+			nextGrid.getDataProvider().refreshAll();
+
 			};
 		}
 
@@ -339,6 +346,7 @@ public class PersonalTaskPage extends TemplatePage{
 	private void addTask() {
 		PersonalTaskDialogPage dialog = new PersonalTaskDialogPage();
 		dialog.openAddTaskFormat(loginUser.getSeq(), primaryTaskList);
+		init();
 	}
 
 	private void addTaskQuickly() {
@@ -350,16 +358,19 @@ public class PersonalTaskPage extends TemplatePage{
 	private void changeCategory(String oldCategory, String newCategory, List<TaskForm> targetTaskList) {
 		PersonalTaskDialogPage dialog = new PersonalTaskDialogPage();
 		dialog.openChangeCategoryDialog(oldCategory, newCategory, targetTaskList);
+		init();
 	}
 
 	private void changeStatus() {
 		PersonalTaskDialogPage dialog = new PersonalTaskDialogPage();
 		dialog.openChangeStatusDialog(draggedTasks);
+		init();
 	}
 
 	private void changeDeadline() {
 		PersonalTaskDialogPage dialog = new PersonalTaskDialogPage();
 		dialog.openUpdateDeadlineDialog(draggedTasks);
+		init();
 	}
 
 	private void trashTasks(List<TaskForm> taskList) {
@@ -370,6 +381,7 @@ public class PersonalTaskPage extends TemplatePage{
 	private void trashTasks() {
 		PersonalTaskDialogPage dialog = new PersonalTaskDialogPage();
 		dialog.openDeleteTasksDialog(loginUser.getSeq(), draggedTasks);
+		init();
 	}
 
 
@@ -383,6 +395,12 @@ public class PersonalTaskPage extends TemplatePage{
 		//taskService().updateCategory(category, seqList);
 		}
 
+	public void init() {
+		draggedTasks = null;
+		draggedGrid = null;
+
+
+	}
 
 
 	public void notifyResult() {
@@ -415,5 +433,42 @@ public class PersonalTaskPage extends TemplatePage{
 
 	private QuickSettingService quickSettingService() {
 		return new QuickSettingService();
+	}
+
+	private void open() {
+		Dialog dialog = new Dialog();
+		Button addButton = new Button("追加", event -> test(dialog));
+		Icon addButtonIcon = new Icon(VaadinIcon.PLUS);
+		addButton.setIcon(addButtonIcon);
+		addButton.addThemeVariants(ButtonVariant.LUMO_SMALL,
+		        ButtonVariant.LUMO_PRIMARY);
+		dialog.add(addButton);
+		dialog.open();
+	}
+
+	private void test(Dialog dialog) {
+		TaskService taskService = new TaskService();
+		List<Long> list = Lists.newArrayList();
+		long test1 = 1004;
+		list.add(test1);
+
+
+
+		initAll();
+		dialog.close();
+
+	}
+
+	private void initAll() {
+		generateTaskLists();
+		inboxGrid.setItems(inboxTaskList);
+		quickGrid.setItems(quickTaskList);
+		askGrid.setItems(askTaskList);
+		nextGrid.setItems(nextTaskList);
+		inboxGrid.getDataProvider().refreshAll();
+		quickGrid.getDataProvider().refreshAll();
+		askGrid.getDataProvider().refreshAll();
+		nextGrid.getDataProvider().refreshAll();
+
 	}
 }

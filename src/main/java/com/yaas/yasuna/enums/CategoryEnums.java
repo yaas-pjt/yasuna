@@ -5,7 +5,7 @@ public enum CategoryEnums {
 	INBOX("インボックス",1),
 	QUICK("すぐやる", 2),
 	ASK("おねがい", 3),
-	SOMEDAY("いつかやる", 4);
+	NEXT("いつかやる", 4);
 
 	private String label;
 	private int id;

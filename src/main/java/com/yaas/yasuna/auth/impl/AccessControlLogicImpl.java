@@ -4,7 +4,11 @@ import com.vaadin.flow.server.VaadinService;
 import com.yaas.yasuna.auth.AccessControlLogic;
 import com.yaas.yasuna.consts.SessionAttributeConsts;
 import com.yaas.yasuna.encoder.PasswordEncoder;
+import com.yaas.yasuna.form.GridSettingForm;
+import com.yaas.yasuna.form.QuickSettingForm;
 import com.yaas.yasuna.form.UserForm;
+import com.yaas.yasuna.service.GridSettingService;
+import com.yaas.yasuna.service.QuickSettingService;
 import com.yaas.yasuna.service.UserService;
 
 public class AccessControlLogicImpl implements AccessControlLogic {
@@ -17,16 +21,14 @@ public class AccessControlLogicImpl implements AccessControlLogic {
 		}
 
 		UserForm loginUser = userService().getById(username);
-
-		if(loginUser == null) {
-			return false;
-		}
+		GridSettingForm gridSetting = gridSettingService().getByUserSeq(loginUser.getSeq());
+		QuickSettingForm quickSetting = quickSettingService().getByUserSeq(loginUser.getSeq());
 
 		if(!loginUser.getPassword().equals(passwordEncoder().encodePassword(password))) {
 			return false;
 		}
 
-		VaadinService.getCurrentRequest().getWrappedSession().setAttribute(SessionAttributeConsts.SESSION_ATTRIBUTE_USER, loginUser);
+		setAttribute(loginUser, gridSetting, quickSetting);
 
 		return true;
 	}
@@ -55,8 +57,22 @@ public class AccessControlLogicImpl implements AccessControlLogic {
 
 	}
 
+	private void setAttribute(UserForm loginUser, GridSettingForm gridSetting, QuickSettingForm quickSetting) {
+		VaadinService.getCurrentRequest().getWrappedSession().setAttribute(SessionAttributeConsts.SESSION_ATTRIBUTE_USER, loginUser);
+		VaadinService.getCurrentRequest().getWrappedSession().setAttribute(SessionAttributeConsts.SESSION_ATTRIBUTE_GRID_SETTING, gridSetting);
+		VaadinService.getCurrentRequest().getWrappedSession().setAttribute(SessionAttributeConsts.SESSION_ATTRIBUTE_QUICK_SETTING, quickSetting);
+	}
+
 	private UserService userService() {
 		return new UserService();
+	}
+
+	private GridSettingService gridSettingService() {
+		return new GridSettingService();
+	}
+
+	private QuickSettingService quickSettingService() {
+		return new QuickSettingService();
 	}
 
 	private PasswordEncoder passwordEncoder() {

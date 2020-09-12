@@ -1,79 +1,75 @@
-package com.yaas.yasuna.page;
+package com.yaas.yasuna.view;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.component.tabs.Tabs;
 
-public abstract class TemplatePage extends VerticalLayout{
+public abstract class CommonView extends VerticalLayout {
 
+	//メイン画面のコンテンツ
 	abstract void buildMainUI();
 
-	public void construct(Component[] headerParts, Component[] mainParts, Component[] footerParts) {
-		setDefaultSetting();
-		buildHeader(headerParts);
-		buildMainContents(mainParts);
-		buildFooter(footerParts);
-	}
-
-	private void setDefaultSetting() {
+	//画面共通設定
+	private void setCommonViewSetting() {
 		setSizeFull();
 		setMargin(false);
 		setSpacing(false);
 		setPadding(false);
-		getStyle().set("overflow", "auto");
 	}
 
-	// ヘッダー
+	//ヘッダー
 	private void buildHeader(Component... components) {
 
-		Icon drawer = VaadinIcon.MENU.create();
-		Span title = new Span("やすな（テスト中）");
+		Icon menuIcon = VaadinIcon.MENU.create();
+		Span systemName = new Span("やすな（仮）");
+
 		HorizontalLayout header = new HorizontalLayout();
-		header.add(drawer);
-		header.add(title);
+		header.add(menuIcon);
+		header.add(systemName);
 
 		if(components != null) {
 			header.add(components);
 		}
 
-		header.expand(title);
+		header.expand(systemName);
 		header.setPadding(true);
 		header.setWidth("100%");
 
 		add(header);
-		buildSideMenu(drawer);
+		buildSideMenu(menuIcon);
 	}
 
+	//メイン画面
 	protected void buildMainContents(Component... components) {
 
-			VerticalLayout mainContents = new VerticalLayout();
-			mainContents.setClassName("maincontents");
-			mainContents.add(components);
-			mainContents.getStyle().set("overflow", "auto");
-			add(mainContents);
-	}
+		VerticalLayout mainContents = new VerticalLayout();
+		mainContents.setClassName("maincontents");
+		mainContents.add(components);
+		mainContents.getStyle().set("overflow", "auto");
+		add(mainContents);
+}
 
 	//フッター
 	private void buildFooter(Component... components) {
 
-		Tab actionButton1 = new Tab(VaadinIcon.USER.create(), new Span("個人タスク"));
-		Tab actionButton2 = new Tab(VaadinIcon.USERS.create(), new Span("チームタスク"));
-		Tab actionButton3 = new Tab(VaadinIcon.CALENDAR.create(), new Span("スケジュール"));
-		Tabs buttonBar = new Tabs(actionButton1, actionButton2, actionButton3);
-		HorizontalLayout footer = new HorizontalLayout(components);
+		HorizontalLayout footer = new HorizontalLayout();
+
+		if(components != null) {
+			footer.add(components);
+		}
+
 		footer.setJustifyContentMode(JustifyContentMode.CENTER);
 		footer.setWidth("100%");
-
 		add(footer);
 	}
 
+	//サイドメニュー
 	private void buildSideMenu(Icon drawer) {
 		VerticalLayout sideMenu = new VerticalLayout();
 		sideMenu.addClassName("sideMenu");
@@ -88,12 +84,24 @@ public abstract class TemplatePage extends VerticalLayout{
 
 		add(sideMenu);
 	}
-
 	private Button createMenuOption(String title) {
 		Button sideMenuButton = new Button(title);
 		sideMenuButton.setWidth("100%");
 		sideMenuButton.addClickListener(ev -> sideMenuButton.getElement().getParent().getStyle().set("left", "-1000px"));
 		sideMenuButton.addClickListener(ev -> Notification.show("Button " + title + " clicked."));
 		return sideMenuButton;
+	}
+
+	//パーツを組み立てて画面完成
+	protected void construct(Component[] headerParts, Component[] mainParts, Component[] footerParts) {
+		setCommonViewSetting();
+		buildHeader(headerParts);
+		buildMainContents(mainParts);
+		buildFooter(footerParts);
+	}
+
+	protected void setCommonDialogSetting(Dialog dialog) {
+		dialog.setWidth("400px");
+		dialog.setHeight("350px");
 	}
 }
