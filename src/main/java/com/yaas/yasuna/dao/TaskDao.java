@@ -22,13 +22,12 @@ public class TaskDao extends AbsDao<Task> {
 		return (List<Task>) getByConditions(task, taskMap.getMap(), connection, GET_BY_SEQ, paramList);
 	}
 
-	public void add(Connection connection, List<Object> paramList) {
-		Task task = new Task();
+	public int add(Connection connection, List<Object> paramList) {
 
-		add(connection, ADD, paramList);
+		return add(connection, ADD, paramList);
 	}
 
-	public void updateCategory(Connection connection, int category, Date deadline, List<Long> seqList) {
+	public int updateCategory(Connection connection, int category, Date deadline, List<Task> taskList) {
 
 		List<Object> paramList = Lists.newArrayList();
 
@@ -37,27 +36,29 @@ public class TaskDao extends AbsDao<Task> {
 
 		String inParams = "";
 
-		for(long seq : seqList) {
-			paramList.add(seq);
+		for(Task task : taskList) {
+			paramList.add(task.getSeq());
 			inParams = inParams + ",?";
 		}
+
 		StringBuilder stringBuilder = new StringBuilder(inParams);
 		stringBuilder.deleteCharAt(0);
 
 		String updateSQL = UPDATE_CATEGORY + stringBuilder + ")";
 
+		int updateRows = update(connection, updateSQL, paramList);
 
-		update(connection, updateSQL, paramList);
+		return updateRows;
 	}
 
-	public int updateStatus(Connection connection, int status, List<Long> seqList) {
+	public int updateStatus(Connection connection, int status, List<Task> taskList) {
 		List<Object> paramList = Lists.newArrayList();
 		String inParams = "";
 
 		paramList.add(status);
 
-		for(long seq : seqList) {
-			paramList.add(seq);
+		for(Task task : taskList) {
+			paramList.add(task.getSeq());
 			inParams = inParams + ",?";
 		}
 		StringBuilder stringBuilder = new StringBuilder(inParams);
@@ -71,17 +72,18 @@ public class TaskDao extends AbsDao<Task> {
 
 	}
 
-	public int updateDeadline(Connection connection, Date deadline, List<Long> seqList) {
+	public int updateDeadline(Connection connection, Date deadline, List<Task> taskList) {
 
 		List<Object> paramList = Lists.newArrayList();
 		String inParams = "";
 
 		paramList.add(deadline);
 
-		for(long seq : seqList) {
-			paramList.add(seq);
+		for(Task task : taskList) {
+			paramList.add(task.getSeq());
 			inParams = inParams + ",?";
 		}
+
 		StringBuilder stringBuilder = new StringBuilder(inParams);
 		stringBuilder.deleteCharAt(0);
 
@@ -94,13 +96,13 @@ public class TaskDao extends AbsDao<Task> {
 	}
 
 
-	public int deleteBySeq(Connection connection, List<Long> seqList) {
+	public int deleteBySeq(Connection connection, List<Task> taskList) {
 
 		List<Object> paramList = Lists.newArrayList();
 		String inParams = "";
 
-		for(long seq : seqList) {
-			paramList.add(seq);
+		for(Task task : taskList) {
+			paramList.add(task.getSeq());
 			inParams = inParams + ",?";
 		}
 		StringBuilder stringBuilder = new StringBuilder(inParams);
@@ -113,7 +115,7 @@ public class TaskDao extends AbsDao<Task> {
 		return updateRows;
 	}
 
-	private static final String GET_BY_SEQ = "SELECT * FROM T_TASK WHERE FK_USER_SEQ = ?";
+	private static final String GET_BY_SEQ = "SELECT * FROM T_TASK WHERE FK_USER_SEQ = ? ORDER BY CATEGORY";
 	private static final String ADD = "INSERT INTO T_TASK (FK_USER_SEQ, PARENT_TASK_SEQ, TITLE, MEMO, STATUS, CATEGORY, SDATE, EDATE, DEADLINE) VALUES (?,?,?,?,?,?,?,?,?)";
 	private static final String UPDATE_CATEGORY = "UPDATE T_TASK SET CATEGORY = ?, DEADLINE = ? WHERE SEQ IN (";
 	private static final String UPDATE_STATUS = "UPDATE T_TASK SET STATUS = ? WHERE SEQ IN (";

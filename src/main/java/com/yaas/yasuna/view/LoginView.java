@@ -1,4 +1,4 @@
-package com.yaas.yasuna.page;
+package com.yaas.yasuna.view;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -10,20 +10,18 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.PWA;
 import com.yaas.yasuna.auth.AccessControlLogic;
 import com.yaas.yasuna.auth.impl.AccessControlLogicImpl;
 
-@PWA(name = "yasuna", shortName = "yasuna",
-iconPath = "icons/yasuna03.png", 	description = "うざいタスクを楽しく管理", backgroundColor = "#ff8c00")
-@Route("login")
-@PageTitle("Login")
+
+@Route("login3")
+@PageTitle("login")
 @CssImport("./styles/shared-styles.css")
-public class LoginPage extends VerticalLayout{
+public class LoginView extends VerticalLayout{
 
 	private AccessControlLogic accessControl;
 
-	public LoginPage() {
+	public LoginView() {
 		buildUI();
 	}
 
@@ -72,4 +70,5 @@ public class LoginPage extends VerticalLayout{
 				event.getSource().setError(true);
 				}
 		}
+
 }

@@ -1,5 +1,7 @@
 package com.yaas.yasuna.service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -32,43 +34,65 @@ public class TaskService {
 		return taskFormList;
 	}
 
-	public void add(List<Object> paramList) {
-		taskDao().add(transaction().getConnection(), paramList);
-	}
+	public boolean add(List<Object> paramList) {
 
-	public void updateCategory(int category, Date deadline, List<Long> seqList) {
-
-		taskDao().updateCategory(transaction().getConnection(), category, deadline, seqList);
-	}
-
-	public boolean updateStatus(int status, List<Long> seqList) {
-
-		if(RESULT_FAILURE == taskDao().updateStatus(transaction().getConnection(), status,  seqList)) {
+		if(RESULT_FAILURE == taskDao().add(transaction().getConnection(), paramList)) {
 			return false;
 		} else {
 			return true;
 		}
 	}
 
-	public boolean updateDeadline(Date deadline, List<Long> seqList) {
+	public boolean updateCategory(int category, Date deadline, List<TaskForm> taskFormList) {
 
-		if(RESULT_FAILURE == taskDao().updateDeadline(transaction().getConnection(), deadline,  seqList)) {
-			return false;
-		} else {
+		List<Task> taskList = generateTaskList(taskFormList);
+		if(taskFormList.size() == taskDao().updateCategory(transaction().getConnection(), category, deadline, taskList)) {
 			return true;
+		} else {
+			return false;
 		}
 	}
 
-	public boolean deleteBySeq(List<Long> seqList) {
+	public boolean updateStatus(int status, List<TaskForm> taskFormList) {
+		List<Task> taskList = generateTaskList(taskFormList);
 
-		if(RESULT_FAILURE == taskDao().deleteBySeq(transaction().getConnection(), seqList)) {
-			return false;
-		} else {
+		if(taskFormList.size() == taskDao().updateStatus(transaction().getConnection(), status,  taskList)) {
 			return true;
+		} else {
+			return false;
 		}
 	}
 
+	public boolean updateDeadline(LocalDate deadline, List<TaskForm> taskFormList) {
+		Date deadlineDate = Date.from(deadline.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		List<Task> taskList = generateTaskList(taskFormList);
 
+		if(taskFormList.size() == taskDao().updateDeadline(transaction().getConnection(), deadlineDate,  taskList)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean deleteBySeq(List<TaskForm> taskFormList) {
+		List<Task> taskList = generateTaskList(taskFormList);
+
+
+		if(taskFormList.size() == taskDao().deleteBySeq(transaction().getConnection(), taskList)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private List<Task> generateTaskList(List<TaskForm> taskFormList){
+		List<Task> taskList = Lists.newArrayList();
+
+		for(TaskForm task : taskFormList) {
+			taskList.add(converter().convertFormToEntity(task));
+		}
+		return taskList;
+	}
 
 	private TaskDao taskDao() {
 		return new TaskDao();
