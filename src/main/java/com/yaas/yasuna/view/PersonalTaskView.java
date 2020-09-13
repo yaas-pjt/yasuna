@@ -22,6 +22,7 @@ import com.vaadin.flow.component.grid.dnd.GridDragEndEvent;
 import com.vaadin.flow.component.grid.dnd.GridDragStartEvent;
 import com.vaadin.flow.component.grid.dnd.GridDropEvent;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
+import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -30,13 +31,18 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinService;
+import com.yaas.yasuna.box.StatusElementBox;
 import com.yaas.yasuna.consts.CategoryConsts;
 import com.yaas.yasuna.consts.SessionAttributeConsts;
+import com.yaas.yasuna.converter.DateConverter;
+import com.yaas.yasuna.converter.StatusConverter;
 import com.yaas.yasuna.enums.CategoryEnums;
+import com.yaas.yasuna.enums.GridColumnEnums.TaskGridColumnEnum;
 import com.yaas.yasuna.enums.GridHeaderEnums;
 import com.yaas.yasuna.enums.GridIdEnums;
 import com.yaas.yasuna.enums.StatusEnums;
@@ -69,6 +75,8 @@ public class PersonalTaskView extends CommonView {
 
 	private List<TaskForm> draggedTasks;
 	private Grid<TaskForm> draggedGrid;
+
+	private TaskForm targetTask;
 
 	private String presentCategory;
 	private String newCategory;
@@ -103,6 +111,7 @@ public class PersonalTaskView extends CommonView {
 
 		//共通設定
 		setGridSetting();
+		setEditor();
 
 		//ドラッグアンドドロップのイベント設定
 		prepareDragAndDropFuntion();
@@ -110,6 +119,91 @@ public class PersonalTaskView extends CommonView {
 		Component[] mainContents = new Component[] {inboxGrid, quickGrid, askGrid, nextGrid};
 
 		construct(generateHeaderContents(), mainContents, generateFooterContents());
+	}
+
+	private void setEditor() {
+		prepareEditor(inboxGrid);
+		prepareEditor(quickGrid);
+		prepareEditor(askGrid);
+		prepareEditor(nextGrid);
+	}
+
+	private void prepareEditor(Grid<TaskForm> taskGrid) {
+
+
+		Binder<TaskForm> binder = new Binder<>(TaskForm.class);
+		Editor<TaskForm> editor = taskGrid.getEditor();
+		editor.setBinder(binder);
+
+		TextField titleField = new TextField();
+		titleField.getElement().addEventListener("keydown", event -> taskGrid.getEditor().cancel()).setFilter("event.key === 'Tab' && event.shiftKey");
+		binder.bind(titleField, "title");
+
+		TextArea memoField = new TextArea();
+		memoField.getElement().addEventListener("keydown", event -> taskGrid.getEditor().cancel()).setFilter("event.key === 'Tab' && event.shiftKey");
+		binder.bind(memoField, "memo");
+
+		Select<String> statusSelect = new Select<>();
+		StatusElementBox statusElementBox = new StatusElementBox();
+		statusSelect.setItems(statusElementBox.getStatusElementList());
+
+		statusSelect.getElement().addEventListener("keydown", event -> taskGrid.getEditor().cancel()).setFilter("event.key === 'Tab' && event.shiftKey");
+		binder.bind(statusSelect, "status");
+
+		DatePicker sDateField = new DatePicker();
+		sDateField.getElement().addEventListener("keydown", event -> taskGrid.getEditor().cancel()).setFilter("event.key === 'Tab' && event.shiftKey");
+		binder.bind(sDateField, "sDate");
+
+		DatePicker eDateField = new DatePicker();
+		eDateField.getElement().addEventListener("keydown", event -> taskGrid.getEditor().cancel()).setFilter("event.key === 'Tab' && event.shiftKey");
+		binder.bind(eDateField, "eDate");
+
+		DatePicker deadlineField = new DatePicker();
+		deadlineField.getElement().addEventListener("keydown", event -> taskGrid.getEditor().cancel()).setFilter("event.key === 'Tab' && event.shiftKey");
+		binder.bind(deadlineField, "deadline");
+
+		if(taskGrid.getColumnByKey(TaskGridColumnEnum.TITLE.getLabel()) != null) {
+			taskGrid.getColumnByKey(TaskGridColumnEnum.TITLE.getLabel()).setEditorComponent(titleField);
+		}
+		if(taskGrid.getColumnByKey(TaskGridColumnEnum.MEMO.getLabel()) != null) {
+			taskGrid.getColumnByKey(TaskGridColumnEnum.MEMO.getLabel()).setEditorComponent(memoField);
+		}
+		if(taskGrid.getColumnByKey(TaskGridColumnEnum.STATUS.getLabel()) != null) {
+			taskGrid.getColumnByKey(TaskGridColumnEnum.STATUS.getLabel()).setEditorComponent(statusSelect);
+		}
+		if(taskGrid.getColumnByKey(TaskGridColumnEnum.SDATE.getLabel()) != null) {
+			taskGrid.getColumnByKey(TaskGridColumnEnum.SDATE.getLabel()).setEditorComponent(sDateField);
+		}
+		if(taskGrid.getColumnByKey(TaskGridColumnEnum.EDATE.getLabel()) != null) {
+			taskGrid.getColumnByKey(TaskGridColumnEnum.EDATE.getLabel()).setEditorComponent(eDateField);
+		}
+		if(taskGrid.getColumnByKey(TaskGridColumnEnum.DEADLINE.getLabel()) != null) {
+			taskGrid.getColumnByKey(TaskGridColumnEnum.DEADLINE.getLabel()).setEditorComponent(deadlineField);
+		}
+		taskGrid.addItemDoubleClickListener(event -> {
+			taskGrid.getEditor().editItem(event.getItem());
+			setTargetTask(event.getItem());
+		    titleField.focus();
+		});
+		binder.addValueChangeListener(event -> {
+			updateTask(titleField.getValue(), statusSelect.getValue(), memoField.getValue(), sDateField.getValue(), eDateField.getValue(), deadlineField.getValue(), targetTask.getSeq());
+			taskGrid.getEditor().refresh();
+		});
+	}
+
+	private void setTargetTask(TaskForm taskForm) {
+		targetTask = taskForm;
+	}
+
+	private void updateTask(String title, String status, String memo, LocalDate sDate, LocalDate eDate, LocalDate deadline, long seq) {
+
+		int updatedStatus = statusConverter().convertStatusToInteger(status);
+		Date updatedsDate = dateConverter().convertLocalDateToDate(sDate);
+		Date updatedeDate = dateConverter().convertLocalDateToDate(eDate);
+		Date updatedDeadline = dateConverter().convertLocalDateToDate(deadline);
+
+		taskService().update(title, updatedStatus, memo, updatedsDate, updatedeDate, updatedDeadline, seq);
+
 	}
 
 	private void prepareDragAndDropFuntion() {
@@ -310,16 +404,12 @@ public class PersonalTaskView extends CommonView {
 	private void setGridSetting() {
 		gridUIGenerator().prepareBaseSetting(inboxGrid);
 		gridUIGenerator().prepareHeader(gridSetting, inboxGrid);
-		gridUIGenerator().prepareEditor(inboxGrid);
 		gridUIGenerator().prepareBaseSetting(quickGrid);
 		gridUIGenerator().prepareHeader(gridSetting, quickGrid);
-		gridUIGenerator().prepareEditor(quickGrid);
 		gridUIGenerator().prepareBaseSetting(askGrid);
 		gridUIGenerator().prepareHeader(gridSetting, askGrid);
-		gridUIGenerator().prepareEditor(askGrid);
 		gridUIGenerator().prepareBaseSetting(nextGrid);
 		gridUIGenerator().prepareHeader(gridSetting, nextGrid);
-		gridUIGenerator().prepareEditor(nextGrid);
 	}
 
 	private void prepareDialog() {
@@ -560,6 +650,14 @@ public class PersonalTaskView extends CommonView {
 		notification.setDuration(3000);
 		notification.open();
 
+	}
+
+	private StatusConverter statusConverter() {
+		return new StatusConverter();
+	}
+
+	private DateConverter dateConverter() {
+		return new DateConverter();
 	}
 
 	private GridUIGenerator<TaskForm> gridUIGenerator() {

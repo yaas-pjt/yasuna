@@ -10,12 +10,9 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.PWA;
 import com.yaas.yasuna.auth.AccessControlLogic;
 import com.yaas.yasuna.auth.impl.AccessControlLogicImpl;
 
-@PWA(name = "yasuna", shortName = "yasuna",
-iconPath = "icons/yasuna03.png", 	description = "うざいタスクを楽しく管理", backgroundColor = "#ff8c00")
 @Route("login")
 @PageTitle("Login")
 @CssImport("./styles/shared-styles.css")

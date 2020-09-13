@@ -1,9 +1,12 @@
 package com.yaas.yasuna.ui.impl;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.Lists;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -11,13 +14,19 @@ import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.yaas.yasuna.converter.DateConverter;
+import com.yaas.yasuna.converter.StatusConverter;
 import com.yaas.yasuna.enums.GridColumnEnums.TaskGridColumnEnum;
 import com.yaas.yasuna.enums.GridHeaderEnums.TaskGridHeaderEnum;
+import com.yaas.yasuna.enums.StatusEnums;
 import com.yaas.yasuna.form.GridSettingForm;
 import com.yaas.yasuna.form.TaskForm;
 import com.yaas.yasuna.page.PersonalTaskDialogPage;
+import com.yaas.yasuna.service.TaskService;
 import com.yaas.yasuna.ui.GridUIGenerator;
 
 public class TaskGridUIGeneratorImpl implements GridUIGenerator<TaskForm>{
@@ -70,7 +79,7 @@ public class TaskGridUIGeneratorImpl implements GridUIGenerator<TaskForm>{
 				columnList.add(categoryColumn);
 			}
 			if(FLG_ON == gridSettingForm.getsDateFlg()) {
-				sDateColumn = taskGrid.addColumn(TaskForm::geteDate).setHeader(TaskGridColumnEnum.SDATE.getLabel());
+				sDateColumn = taskGrid.addColumn(TaskForm::getsDate).setHeader(TaskGridColumnEnum.SDATE.getLabel());
 				sDateColumn.setKey(TaskGridColumnEnum.SDATE.getLabel());
 				columnList.add(sDateColumn);
 			}
@@ -134,15 +143,65 @@ public class TaskGridUIGeneratorImpl implements GridUIGenerator<TaskForm>{
 			TextField titleField = new TextField();
 			titleField.getElement().addEventListener("keydown", event -> taskGrid.getEditor().cancel()).setFilter("event.key === 'Tab' && event.shiftKey");
 			binder.bind(titleField, "title");
-			taskGrid.getColumnByKey(TaskGridColumnEnum.TITLE.getLabel()).setEditorComponent(titleField);
+
+			TextArea memoField = new TextArea();
+			memoField.getElement().addEventListener("keydown", event -> taskGrid.getEditor().cancel()).setFilter("event.key === 'Tab' && event.shiftKey");
+			binder.bind(memoField, "memo");
+
+			Select<String> statusSelect = new Select<>();
+			//statusSelect.setItemLabelGenerator(StatusEnums :: getLabel);
+			statusSelect.setItems(StatusEnums.YET.getLabels());
+
+
+
+			statusSelect.getElement().addEventListener("keydown", event -> taskGrid.getEditor().cancel()).setFilter("event.key === 'Tab' && event.shiftKey");
+			binder.bind(statusSelect, "status");
+
+			DatePicker sDateField = new DatePicker();
+			sDateField.getElement().addEventListener("keydown", event -> taskGrid.getEditor().cancel()).setFilter("event.key === 'Tab' && event.shiftKey");
+			binder.bind(sDateField, "sDate");
+
+			DatePicker eDateField = new DatePicker();
+			eDateField.getElement().addEventListener("keydown", event -> taskGrid.getEditor().cancel()).setFilter("event.key === 'Tab' && event.shiftKey");
+			binder.bind(eDateField, "eDate");
+
+			DatePicker deadlineField = new DatePicker();
+			deadlineField.getElement().addEventListener("keydown", event -> taskGrid.getEditor().cancel()).setFilter("event.key === 'Tab' && event.shiftKey");
+			binder.bind(deadlineField, "deadline");
+
+			if(taskGrid.getColumnByKey(TaskGridColumnEnum.TITLE.getLabel()) != null) {
+				taskGrid.getColumnByKey(TaskGridColumnEnum.TITLE.getLabel()).setEditorComponent(titleField);
+			}
+			if(taskGrid.getColumnByKey(TaskGridColumnEnum.MEMO.getLabel()) != null) {
+				taskGrid.getColumnByKey(TaskGridColumnEnum.MEMO.getLabel()).setEditorComponent(memoField);
+			}
+			if(taskGrid.getColumnByKey(TaskGridColumnEnum.STATUS.getLabel()) != null) {
+				taskGrid.getColumnByKey(TaskGridColumnEnum.STATUS.getLabel()).setEditorComponent(statusSelect);
+			}
+			if(taskGrid.getColumnByKey(TaskGridColumnEnum.SDATE.getLabel()) != null) {
+				taskGrid.getColumnByKey(TaskGridColumnEnum.SDATE.getLabel()).setEditorComponent(sDateField);
+			}
+			if(taskGrid.getColumnByKey(TaskGridColumnEnum.EDATE.getLabel()) != null) {
+				taskGrid.getColumnByKey(TaskGridColumnEnum.EDATE.getLabel()).setEditorComponent(eDateField);
+			}
+			if(taskGrid.getColumnByKey(TaskGridColumnEnum.DEADLINE.getLabel()) != null) {
+				taskGrid.getColumnByKey(TaskGridColumnEnum.DEADLINE.getLabel()).setEditorComponent(deadlineField);
+			}
 			taskGrid.addItemDoubleClickListener(event -> {
 				taskGrid.getEditor().editItem(event.getItem());
 			    titleField.focus();
 			});
+			binder.addValueChangeListener(event -> {
+				taskGrid.getEditor().refresh();
+			});
 		}
 
-	private void setItemDoubleClickEvent() {
+	private void updateTask(String title, String status, String memo, LocalDate sDate, LocalDate eDate, LocalDate deadline, long seq) {
 
+		int updatedStatus = statusConverter().convertStatusToInteger(status);
+		Date updatedsDate = dateConverter().convertLocalDateToDate(sDate);
+		Date updatedeDate = dateConverter().convertLocalDateToDate(eDate);
+		Date updatedDeadline = dateConverter().convertLocalDateToDate(deadline);
 	}
 
 	private void changeCategory(String oldCategory, String newCategory, List<TaskForm> targetTaskList) {
@@ -170,4 +229,15 @@ public class TaskGridUIGeneratorImpl implements GridUIGenerator<TaskForm>{
 		}
 	}
 
+	private StatusConverter statusConverter() {
+		return new StatusConverter();
+	}
+
+	private DateConverter dateConverter() {
+		return new DateConverter();
+	}
+
+	private TaskService taskService() {
+		return new TaskService();
+	}
 }

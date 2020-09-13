@@ -27,6 +27,10 @@ public class TaskDao extends AbsDao<Task> {
 		return add(connection, ADD, paramList);
 	}
 
+	public int update(Connection connection, List<Object> paramList) {
+		return update(connection, SIMPLE_UPDATE, paramList);
+	}
+
 	public int updateCategory(Connection connection, int category, Date deadline, List<Task> taskList) {
 
 		List<Object> paramList = Lists.newArrayList();
@@ -117,6 +121,7 @@ public class TaskDao extends AbsDao<Task> {
 
 	private static final String GET_BY_SEQ = "SELECT * FROM T_TASK WHERE FK_USER_SEQ = ? ORDER BY CATEGORY";
 	private static final String ADD = "INSERT INTO T_TASK (FK_USER_SEQ, PARENT_TASK_SEQ, TITLE, MEMO, STATUS, CATEGORY, SDATE, EDATE, DEADLINE) VALUES (?,?,?,?,?,?,?,?,?)";
+	private static final String SIMPLE_UPDATE = "UPDATE T_TASK SET TITLE = ?, MEMO = ?, STATUS = ?, SDATE = ?, EDATE = ?, DEADLINE = ? WHERE SEQ = ?";
 	private static final String UPDATE_CATEGORY = "UPDATE T_TASK SET CATEGORY = ?, DEADLINE = ? WHERE SEQ IN (";
 	private static final String UPDATE_STATUS = "UPDATE T_TASK SET STATUS = ? WHERE SEQ IN (";
 	private static final String UPDATE_DEADLINE = "UPDATE T_TASK SET DEADLINE = ? WHERE SEQ IN (";
