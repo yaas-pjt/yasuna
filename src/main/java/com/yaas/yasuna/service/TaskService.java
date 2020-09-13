@@ -43,6 +43,24 @@ public class TaskService {
 		}
 	}
 
+	public boolean update(String title, int status, String memo, Date sDate, Date eDate, Date deadline, long seq) {
+		List<Object> paramList = Lists.newArrayList();
+
+		paramList.add(title);
+		paramList.add(memo);
+		paramList.add(status);
+		paramList.add(sDate);
+		paramList.add(eDate);
+		paramList.add(deadline);
+		paramList.add(seq);
+
+		if(RESULT_FAILURE == taskDao().update(transaction().getConnection(), paramList)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	public boolean updateCategory(int category, Date deadline, List<TaskForm> taskFormList) {
 
 		List<Task> taskList = generateTaskList(taskFormList);

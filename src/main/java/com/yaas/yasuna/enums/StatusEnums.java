@@ -1,5 +1,9 @@
 package com.yaas.yasuna.enums;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 public enum StatusEnums {
 
 	YET("未着手",0),
@@ -11,6 +15,7 @@ public enum StatusEnums {
 
 	private String label;
 	private int id;
+	private List<String> labels;
 
 	private StatusEnums(String label, int id) {
 		this.label = label;
@@ -31,6 +36,21 @@ public enum StatusEnums {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public List<String> getLabels() {
+		labels = Lists.newArrayList();
+		labels.add(YET.getLabel());
+		labels.add(DOING.getLabel());
+		labels.add(ALMOST.getLabel());
+		labels.add(PROBLEM.getLabel());
+		labels.add(EMERGENCY.getLabel());
+		labels.add(DONE.getLabel());
+		return labels;
+	}
+
+	public void setLabels(List<String> labels) {
+		this.labels = labels;
 	}
 
 }
