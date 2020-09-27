@@ -1,16 +1,24 @@
 package com.yaas.yasuna.view;
 
+import org.vaadin.bootstrapcss.components.BsCard;
+
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.yaas.yasuna.auth.LoginUser;
+import com.yaas.yasuna.form.UserProfileForm;
 
 public abstract class CommonView extends VerticalLayout {
+
+	private UserProfileForm userProfile;
 
 	//メイン画面のコンテンツ
 	abstract void buildMainUI();
@@ -71,6 +79,8 @@ public abstract class CommonView extends VerticalLayout {
 
 	//サイドメニュー
 	private void buildSideMenu(Icon drawer) {
+		setUserProfile();
+
 		VerticalLayout sideMenu = new VerticalLayout();
 		sideMenu.addClassName("sideMenu");
 		sideMenu.setHeight("100%");
@@ -79,11 +89,47 @@ public abstract class CommonView extends VerticalLayout {
 		drawer.getElement().addEventListener("click", event -> sideMenu.getStyle().set("left", "0px"));
 		Icon avatar = VaadinIcon.USER.create();
 		avatar.setSize("8em");
-		sideMenu.add(createMenuOption("閉じる"), avatar, new Span("John Doe"),createMenuOption("個人設定"), createMenuOption("チーム"), createMenuOption("ログアウト"));
+		BsCard profileCard = new BsCard();
+		profileCard.setCardHeaderText("プロフィール");
+		Div nameDiv = new Div(new Text("氏名：" + userProfile.getFirstName() + "　" + userProfile.getLastName()));
+		Div orgDiv = new Div(new Text("組織：" + userProfile.getOrg()));
+		profileCard.add(nameDiv, orgDiv);
+
+		sideMenu.add(createMenuOption("閉じる"), avatar, profileCard, createPersonalSettingButton(), createLogoutButton());
 		sideMenu.setAlignItems(Alignment.CENTER);
 
 		add(sideMenu);
 	}
+
+	private Button createPersonalSettingButton() {
+		Button personalSettingButton = new Button("個人設定");
+		personalSettingButton.setWidth("100%");
+		personalSettingButton.addClickListener(ev -> personalSettingButton.getElement().getParent().getStyle().set("left", "-1000px"));
+		personalSettingButton.addClickListener(ev -> getUI().get().navigate("personalsetting"));
+
+		return personalSettingButton;
+	}
+
+	private Button createLogoutButton() {
+		Button logoutButton = new Button("ログアウト");
+		logoutButton.setWidth("100%");
+		logoutButton.addClickListener(event -> logout());
+		logoutButton.getElement().setAttribute("title", "Logout (Ctrl+L)");
+
+		return logoutButton;
+	}
+
+	private void logout() {
+		//AccessControlFactory.getInstance().createAccessControl().signOut(sideMenu);
+
+		//VaadinSession.getCurrent().getSession().removeAttribute(SessionAttributeConsts.SESSION_ATTRIBUTE_USER);
+		//VaadinSession.getCurrent().getSession().removeAttribute(SessionAttributeConsts.SESSION_ATTRIBUTE_GRID_SETTING);
+		//VaadinSession.getCurrent().getSession().removeAttribute(SessionAttributeConsts.SESSION_ATTRIBUTE_QUICK_SETTING);
+		//VaadinSession.getCurrent().getSession().removeAttribute(SessionAttributeConsts.SESSION_ATTRIBUTE_USER_PROFILE);
+		getUI().get().navigate("login");
+		getUI().get().getSession().close();
+	}
+
 	private Button createMenuOption(String title) {
 		Button sideMenuButton = new Button(title);
 		sideMenuButton.setWidth("100%");
@@ -100,8 +146,15 @@ public abstract class CommonView extends VerticalLayout {
 		buildFooter(footerParts);
 	}
 
+	//ダイアログの共通設定
 	protected void setCommonDialogSetting(Dialog dialog) {
-		dialog.setWidth("400px");
-		dialog.setHeight("350px");
+		dialog.setWidth("80%");
+		dialog.setHeight("100%");
+		//dialog.getElement().getStyle().set("overflow", "auto");
+		dialog.setModal(false);
 	}
+
+	private void setUserProfile() {
+		userProfile = LoginUser.getUserProfile();
+		}
 }

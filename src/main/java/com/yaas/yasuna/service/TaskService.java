@@ -17,7 +17,7 @@ import com.yaas.yasuna.transaction.Transaction;
 
 public class TaskService {
 
-	private int RESULT_FAILURE = 0;
+	private static final int RESULT_FAILURE = 0;
 
 	public List<TaskForm> getByUser(long fkUserSeq) {
 
@@ -34,8 +34,18 @@ public class TaskService {
 		return taskFormList;
 	}
 
-	public boolean add(List<Object> paramList) {
+	public boolean add(long uid, long pTask, int category, String title, int status, String memo, LocalDate sDate, LocalDate deadline) {
+		List<Object> paramList = Lists.newArrayList();
 
+		paramList.add(uid);
+		paramList.add(pTask);
+		paramList.add(title);
+		paramList.add(memo);
+		paramList.add(status);
+		paramList.add(category);
+		paramList.add(sDate);
+		paramList.add(null);
+		paramList.add(deadline);
 		if(RESULT_FAILURE == taskDao().add(transaction().getConnection(), paramList)) {
 			return false;
 		} else {

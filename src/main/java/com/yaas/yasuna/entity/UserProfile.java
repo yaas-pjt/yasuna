@@ -4,16 +4,13 @@ public class UserProfile {
 
 	private long seq;
 	private long fkUserSeq;
-	private String familyName;
 	private String firstName;
+	private String lastName;
 	private byte[] picture;
-	private String mail;
-	private String organization;
-
+	private String org;
 
 	public UserProfile() {
 		super();
-		// TODO 自動生成されたコンストラクター・スタブ
 	}
 	public long getSeq() {
 		return seq;
@@ -27,11 +24,12 @@ public class UserProfile {
 	public void setFkUserSeq(long fkUserSeq) {
 		this.fkUserSeq = fkUserSeq;
 	}
-	public String getFamilyName() {
-		return familyName;
+
+	public String getLastName() {
+		return lastName;
 	}
-	public void setFamilyName(String familyName) {
-		this.familyName = familyName;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 	public String getFirstName() {
 		return firstName;
@@ -45,19 +43,11 @@ public class UserProfile {
 	public void setPicture(byte[] picture) {
 		this.picture = picture;
 	}
-	public String getMail() {
-		return mail;
+	public String getOrg() {
+		return org;
 	}
-	public void setMail(String mail) {
-		this.mail = mail;
+	public void setOrg(String org) {
+		this.org = org;
 	}
-	public String getOrganization() {
-		return organization;
-	}
-	public void setOrganization(String organization) {
-		this.organization = organization;
-	}
-
-
 
 }
