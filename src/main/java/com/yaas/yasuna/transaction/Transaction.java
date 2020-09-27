@@ -7,20 +7,21 @@ import java.sql.SQLException;
 public class Transaction {
 	private Connection connection = null;
 
-	private static final String DRIVER_NAME = "org.mariadb.jdbc.Driver";
+	private static final String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
 
 	public Connection getConnection() {
-		if (System.getenv("RDS_HOSTNAME") != null) {
+		if (System.getProperty("RDS_HOSTNAME") != null) {
 			 try {
 					Class.forName(DRIVER_NAME);
-				      String dbName = System.getenv("RDS_DB_NAME");
-				      String userName = System.getenv("RDS_USERNAME");
-				      String password = System.getenv("RDS_PASSWORD");
-				      String hostname = System.getenv("RDS_HOSTNAME");
-				      String port = System.getenv("RDS_PORT");
-				      String jdbcUrl = "jdbc:postgresql://" + hostname + ":" + port + "/" + dbName + "?user=" + userName + "&password=" + password;
-				connection = DriverManager.getConnection(jdbcUrl);
+				      String dbName = System.getProperty("RDS_DB_NAME");
+				      String userName = System.getProperty("RDS_USERNAME");
+				      String password = System.getProperty("RDS_PASSWORD");
+				      String hostname = System.getProperty("RDS_HOSTNAME");
+				      String port = System.getProperty("RDS_PORT");
+				      String jdbcUrl = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName + "?serverTimezone=JST";
+				connection = DriverManager.getConnection(jdbcUrl, userName, password);
 				connection.setAutoCommit(false);
+
 
 				return connection;
 

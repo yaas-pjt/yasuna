@@ -10,4 +10,6 @@ public interface GridUIGenerator<F> {
 	void prepareHeader(GridSettingForm gridSettingForm, Grid<F> grid);
 
 	void prepareEditor(Grid<F> grid);
+
+	void prepareWidth(Grid<F> grid);
 }

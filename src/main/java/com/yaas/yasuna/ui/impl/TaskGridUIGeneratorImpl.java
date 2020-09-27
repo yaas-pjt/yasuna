@@ -228,7 +228,10 @@ public class TaskGridUIGeneratorImpl implements GridUIGenerator<TaskForm>{
 			return null;
 		}
 	}
-
+	@Override
+	public void prepareWidth(Grid<TaskForm> grid) {
+		grid.getColumns().forEach(column ->column.setAutoWidth(true));
+	}
 	private StatusConverter statusConverter() {
 		return new StatusConverter();
 	}
@@ -240,4 +243,6 @@ public class TaskGridUIGeneratorImpl implements GridUIGenerator<TaskForm>{
 	private TaskService taskService() {
 		return new TaskService();
 	}
+
+
 }

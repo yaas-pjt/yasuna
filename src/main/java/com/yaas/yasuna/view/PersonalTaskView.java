@@ -23,6 +23,7 @@ import com.vaadin.flow.component.grid.dnd.GridDragStartEvent;
 import com.vaadin.flow.component.grid.dnd.GridDropEvent;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
 import com.vaadin.flow.component.grid.editor.Editor;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -35,10 +36,9 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinService;
+import com.yaas.yasuna.auth.LoginUser;
 import com.yaas.yasuna.box.StatusElementBox;
 import com.yaas.yasuna.consts.CategoryConsts;
-import com.yaas.yasuna.consts.SessionAttributeConsts;
 import com.yaas.yasuna.converter.DateConverter;
 import com.yaas.yasuna.converter.StatusConverter;
 import com.yaas.yasuna.enums.CategoryEnums;
@@ -56,7 +56,7 @@ import com.yaas.yasuna.ui.GridUIGenerator;
 import com.yaas.yasuna.ui.impl.TaskGridUIGeneratorImpl;
 
 @Route("personaltask")
-@PageTitle("personaltask")
+@PageTitle("あなたのタスク")
 @CssImport("./styles/shared-styles.css")
 public class PersonalTaskView extends CommonView {
 
@@ -350,9 +350,9 @@ public class PersonalTaskView extends CommonView {
 	}
 
 	private void getSessionAttributes() {
-		loginUser = (UserForm) VaadinService.getCurrentRequest().getWrappedSession().getAttribute(SessionAttributeConsts.SESSION_ATTRIBUTE_USER);
-		gridSetting = (GridSettingForm) VaadinService.getCurrentRequest().getWrappedSession().getAttribute(SessionAttributeConsts.SESSION_ATTRIBUTE_GRID_SETTING);
-		quickSetting = (QuickSettingForm) VaadinService.getCurrentRequest().getWrappedSession().getAttribute(SessionAttributeConsts.SESSION_ATTRIBUTE_QUICK_SETTING);
+		loginUser = LoginUser.getUserData();
+		gridSetting = LoginUser.getUserGridSetting();
+		quickSetting = LoginUser.getUserQuickSetting();
 	}
 
 	private void initGrid() {
@@ -404,12 +404,16 @@ public class PersonalTaskView extends CommonView {
 	private void setGridSetting() {
 		gridUIGenerator().prepareBaseSetting(inboxGrid);
 		gridUIGenerator().prepareHeader(gridSetting, inboxGrid);
+		gridUIGenerator().prepareWidth(inboxGrid);
 		gridUIGenerator().prepareBaseSetting(quickGrid);
 		gridUIGenerator().prepareHeader(gridSetting, quickGrid);
+		gridUIGenerator().prepareWidth(quickGrid);
 		gridUIGenerator().prepareBaseSetting(askGrid);
 		gridUIGenerator().prepareHeader(gridSetting, askGrid);
+		gridUIGenerator().prepareWidth(askGrid);
 		gridUIGenerator().prepareBaseSetting(nextGrid);
 		gridUIGenerator().prepareHeader(gridSetting, nextGrid);
+		gridUIGenerator().prepareWidth(nextGrid);
 	}
 
 	private void prepareDialog() {
@@ -465,28 +469,24 @@ public class PersonalTaskView extends CommonView {
 		deadlineField.setValue(defaultDeadline);
 		deadlineField.setLabel("対応期限");
 
-		Button registerButton = new Button("追加",  event -> addTask(loginUser.getSeq(), defaultParentTaskId, defaultCategory, titleField.getValue(), defaultStatus, memoField.getValue(), defaultsDate, defaultDeadline));
+		Button registerButton = new Button("追加",  event -> addTask(loginUser.getSeq(), defaultParentTaskId, selectedCategory, titleField.getValue(), selectedStatus, memoField.getValue(), sDateField.getValue(), deadlineField.getValue()));
 		format.add(titleField, categorySelect, statusSelect, memoField, sDateField,  deadlineField, registerButton);
+		format.setHeight("200%");
+		format.setMargin(false);
+		format.setPadding(false);
+		format.getElement().getStyle().set("overflow", "auto");
 
 		prepareDialog();
+		commonDialog.add(new H1("新規タスク"));
 		commonDialog.add(format);
 		commonDialog.open();
 	}
 	private void addTask(long uid, long pTask, int category, String title, int status, String memo, LocalDate sDate, LocalDate deadline) {
-		List<Object> paramList = Lists.newArrayList();
-		paramList.add(uid);
-		paramList.add(pTask);
-		paramList.add(title);
-		paramList.add(memo);
-		paramList.add(status);
-		paramList.add(category);
-		paramList.add(sDate);
-		paramList.add(null);
-		paramList.add(deadline);
 
-		if(taskService().add(paramList)) {
+		if(taskService().add(uid, pTask, category, title, status, memo, sDate, deadline)) {
 			commonDialog.close();
-
+			initGrid();
+			announce();
 		} else {
 			throw new YasunaException("タスク追加に失敗しました。");
 		}
@@ -526,6 +526,8 @@ public class PersonalTaskView extends CommonView {
 
 		if(taskService().updateCategory(category, deadlineDate, targetTaskList)) {
 			commonDialog.close();
+			initGrid();
+			announce();
 		} else {
 			throw new YasunaException("分類の更新に失敗しました。");
 		}
@@ -576,6 +578,8 @@ public class PersonalTaskView extends CommonView {
 	private void deleteTasks(List<TaskForm> targetTaskList) {
 		if(taskService().deleteBySeq(targetTaskList)) {
 			commonDialog.close();
+			initGrid();
+			announce();
 		} else {
 			throw new YasunaException("タスクの削除に失敗しました。");
 		}
@@ -607,6 +611,8 @@ public class PersonalTaskView extends CommonView {
 	private void updateStatus(int status, List<TaskForm> targetTaskList) {
 		if(taskService().updateStatus(status, targetTaskList)) {
 			commonDialog.close();
+			initGrid();
+			announce();
 		} else {
 			throw new YasunaException("ステータス更新に失敗しました。");
 		}

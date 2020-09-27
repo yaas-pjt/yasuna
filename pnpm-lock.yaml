@@ -1,6 +1,7 @@
 dependencies:
   '@polymer/iron-icon': 3.0.1
   '@polymer/iron-list': 3.0.2
+  '@polymer/paper-ripple': 3.0.1
   '@polymer/polymer': 3.2.0
   '@vaadin/flow-frontend': 'link:target/flow-frontend'
   '@vaadin/router': 1.7.1
@@ -1102,6 +1103,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-xg1WanG25BIkQE8rhuReqY9zx1K5M7F+YAIYpswEp5eyDIaZ1Y3vUmVeQ3KG+hiSugzI1M752azXN7kvyhOBcQ==
+  /@polymer/paper-ripple/3.0.1:
+    dependencies:
+      '@polymer/iron-a11y-keys-behavior': 3.0.1
+      '@polymer/polymer': 3.2.0
+    dev: false
+    resolution:
+      integrity: sha512-dgOe12GyCF1VZBLUQqnzGWlf3xb255FajNCVB1VFj/AtskYtoamnafa7m3a+1vs+C8qbg4Benn5KwgxVDSW4cg==
   /@polymer/polymer/3.2.0:
     dependencies:
       '@webcomponents/shadycss': 1.9.4
@@ -6740,6 +6748,7 @@ packages:
 specifiers:
   '@polymer/iron-icon': 3.0.1
   '@polymer/iron-list': 3.0.2
+  '@polymer/paper-ripple': 3.0.1
   '@polymer/polymer': 3.2.0
   '@vaadin/flow-frontend': ./target/flow-frontend
   '@vaadin/router': 1.7.1

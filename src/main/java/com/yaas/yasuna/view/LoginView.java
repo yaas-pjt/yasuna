@@ -16,7 +16,7 @@ import com.yaas.yasuna.auth.impl.AccessControlLogicImpl;
 
 @PWA(name = "yasuna", shortName = "yasuna",
 iconPath = "icons/yasuna03.png", 	description = "うざいタスクを楽しく管理", backgroundColor = "#ff8c00")
-@Route("login3")
+@Route("login")
 @PageTitle("login")
 @CssImport("./styles/shared-styles.css")
 public class LoginView extends VerticalLayout{
@@ -72,5 +72,4 @@ public class LoginView extends VerticalLayout{
 				event.getSource().setError(true);
 				}
 		}
-
 }

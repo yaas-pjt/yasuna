@@ -9,11 +9,9 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
 import com.yaas.yasuna.auth.AccessControlLogic;
 import com.yaas.yasuna.auth.impl.AccessControlLogicImpl;
 
-@Route("login")
 @PageTitle("Login")
 @CssImport("./styles/shared-styles.css")
 public class LoginPage extends VerticalLayout{
@@ -63,10 +61,20 @@ public class LoginPage extends VerticalLayout{
 
 		accessControl = new AccessControlLogicImpl();
 
+		System.setProperty("RDS_HOSTNAME", "aaa97ual6zfmnf.ch7cvyfeew6m.ap-northeast-1.rds.amazonaws.com");
+		System.setProperty("RDS_DB_NAME", "ebdb");
+		System.setProperty("RDS_PORT", "3306");
+		System.setProperty("RDS_USERNAME", "admin");
+		System.setProperty("RDS_PASSWORD", "adminpass");
+
 		if (accessControl.signIn(event.getUsername(), event.getPassword())) {
 			getUI().get().navigate("personaltask");
 			} else {
 				event.getSource().setError(true);
 				}
 		}
+
 }
+
+
+

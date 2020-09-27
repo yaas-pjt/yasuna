@@ -119,12 +119,12 @@ public class TaskDao extends AbsDao<Task> {
 		return updateRows;
 	}
 
-	private static final String GET_BY_SEQ = "SELECT * FROM T_TASK WHERE FK_USER_SEQ = ? ORDER BY CATEGORY";
-	private static final String ADD = "INSERT INTO T_TASK (FK_USER_SEQ, PARENT_TASK_SEQ, TITLE, MEMO, STATUS, CATEGORY, SDATE, EDATE, DEADLINE) VALUES (?,?,?,?,?,?,?,?,?)";
-	private static final String SIMPLE_UPDATE = "UPDATE T_TASK SET TITLE = ?, MEMO = ?, STATUS = ?, SDATE = ?, EDATE = ?, DEADLINE = ? WHERE SEQ = ?";
-	private static final String UPDATE_CATEGORY = "UPDATE T_TASK SET CATEGORY = ?, DEADLINE = ? WHERE SEQ IN (";
-	private static final String UPDATE_STATUS = "UPDATE T_TASK SET STATUS = ? WHERE SEQ IN (";
-	private static final String UPDATE_DEADLINE = "UPDATE T_TASK SET DEADLINE = ? WHERE SEQ IN (";
-	private static final String DELETE_BY_SEQ = "DELETE FROM T_TASK WHERE SEQ IN (";
+	private static final String GET_BY_SEQ = "SELECT * FROM t_task WHERE FK_USER_SEQ = ? ORDER BY CATEGORY";
+	private static final String ADD = "INSERT INTO t_task (FK_USER_SEQ, PARENT_TASK_SEQ, TITLE, MEMO, STATUS, CATEGORY, SDATE, EDATE, DEADLINE) VALUES (?,?,?,?,?,?,?,?,?)";
+	private static final String SIMPLE_UPDATE = "UPDATE t_task SET TITLE = ?, MEMO = ?, STATUS = ?, SDATE = ?, EDATE = ?, DEADLINE = ? WHERE SEQ = ?";
+	private static final String UPDATE_CATEGORY = "UPDATE t_task SET CATEGORY = ?, DEADLINE = ? WHERE SEQ IN (";
+	private static final String UPDATE_STATUS = "UPDATE t_task SET STATUS = ? WHERE SEQ IN (";
+	private static final String UPDATE_DEADLINE = "UPDATE t_task SET DEADLINE = ? WHERE SEQ IN (";
+	private static final String DELETE_BY_SEQ = "DELETE FROM t_task WHERE SEQ IN (";
 
 }

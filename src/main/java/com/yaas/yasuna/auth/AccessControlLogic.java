@@ -2,6 +2,8 @@ package com.yaas.yasuna.auth;
 
 import java.io.Serializable;
 
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+
 public interface AccessControlLogic extends Serializable {
 
 	boolean signIn(String username, String password);
@@ -12,5 +14,5 @@ public interface AccessControlLogic extends Serializable {
 
 	String getPrincipalName();
 
-	void signOut();
+	void signOut(VerticalLayout sideMenu);
 }
